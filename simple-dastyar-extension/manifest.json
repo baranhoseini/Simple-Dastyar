@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Simple Dastyar Extension",
+  "version": "1.0",
+  "description": "Full-page layout for new tab (Dastyar-style).",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": ["storage"]
+}

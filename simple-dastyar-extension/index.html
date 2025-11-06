@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>طرح اولیه دستیار</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="جستجو..." />
+      <button id="search-button">🔍</button>
+    </div>
+  </header>
+
+
+  <!-- محتوای اصلی -->
+  <main>
+    <!-- ستون چپ: تقویم -->
+    <section id="calendar-section">
+      <div id="calendar-header">
+        <button id="next-month">▶</button>
+        <h3 id="month-year"></h3>
+        <button id="prev-month">◀</button>
+      </div>
+
+      <div id="calendar-days" class="days-row"></div>
+      <div id="calendar-grid"></div>
+
+      <button id="today-btn">بازگشت به امروز</button>
+
+    </section>
+
+
+    <!-- ستون وسط: دسترسی سریع -->
+    <section id="quick-access">
+      <h2>دسترسی سریع</h2>
+      <div id="shortcuts-container" class="grid"></div>
+      <button id="add-shortcut">➕ افزودن میانبر</button>
+    </section>
+
+
+    <!-- ستون راست: یادداشت‌ها -->
+    <section id="notes-section">
+      <h2>یادداشت‌های من</h2>
+
+      <div id="notes-list"></div>
+
+      <button id="add-note">➕ افزودن یادداشت جدید</button>
+    </section>
+
+  </main>
+
+  
+
+  <script src="script.js"></script>
+</body>
+</html>
