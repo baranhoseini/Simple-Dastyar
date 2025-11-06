@@ -12,7 +12,7 @@ Built entirely with **HTML + CSS + JavaScript**.
 - ⚡ **Quick Access:** Add your favorite websites as shortcuts with automatic favicons.  
 - 🔍 **Search Bar:** Instantly search Google from your new tab.  
 - 💾 **Offline Storage:** All data saved locally using `localStorage`.  
-- 🎨 **Smooth Animations:** Subtle fade-in effects for a polished feel.
+- 🎨 **Smooth Animations:** Subtle fade-in effects for a polished feel.  
 
 > 🛠️ *Upcoming:* Persian (Jalali) calendar mode and dark theme support.
 
@@ -21,14 +21,15 @@ Built entirely with **HTML + CSS + JavaScript**.
 ## 🚀 Installation
 
 1. Clone or download this repository:
- 
+   ```bash
    git clone https://github.com/<your-username>/simple-dastyar.git
-   
-2.Open Google Chrome and go to
+Open Google Chrome and go to:
 
-   chrome://extensions/
-   
-Turn on Developer Mode.
+arduino
+Copy code
+chrome://extensions/
+Turn on Developer Mode (toggle in the top-right corner).
 
-3.Click Load unpacked and select this project folder
+Click Load unpacked and select this project folder.
+
 Open a new tab — enjoy your Simple Dastyar dashboard 🎉
