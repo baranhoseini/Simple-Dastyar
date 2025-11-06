@@ -23,13 +23,13 @@ Built entirely with **HTML + CSS + JavaScript**.
 1. Clone or download this repository:
    ```bash
    git clone https://github.com/<your-username>/simple-dastyar.git
-Open Google Chrome and go to:
+2.Open Google Chrome and go to:
 
-arduino
-Copy code
+```
 chrome://extensions/
-Turn on Developer Mode (toggle in the top-right corner).
+```
+3.Turn on Developer Mode (toggle in the top-right corner).
 
-Click Load unpacked and select this project folder.
+4.Click Load unpacked and select this project folder.
 
-Open a new tab — enjoy your Simple Dastyar dashboard 🎉
+5.Open a new tab — enjoy your Simple Dastyar dashboard 🎉
