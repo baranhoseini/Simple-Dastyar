@@ -1,10 +1,26 @@
 {
   "manifest_version": 3,
   "name": "Simple Dastyar Extension",
-  "version": "1.0",
-  "description": "Full-page layout for new tab (Dastyar-style).",
+  "version": "1.1",
+  "description": "A new-tab dashboard with search, quick access, and Persian/Gregorian calendar.",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "permissions": ["storage"]
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "icons/icon48.png"
+  },
+  "icons": {
+    "48": "icons/icon48.png"
+  },
+  "permissions": ["storage"],
+  "web_accessible_resources": [
+    {
+      "resources": ["libs/*.js", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }

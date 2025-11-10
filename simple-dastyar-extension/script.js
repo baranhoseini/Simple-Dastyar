@@ -376,25 +376,6 @@ function renderPersianCalendar(date) {
 }
 
 
-
-
-
-// // navigation
-// prevMonthBtn.addEventListener('click', () => {
-//   currentDate.setMonth(currentDate.getMonth() - 1);
-//   renderCalendar(currentDate);
-// });
-
-// nextMonthBtn.addEventListener('click', () => {
-//   currentDate.setMonth(currentDate.getMonth() + 1);
-//   renderCalendar(currentDate);
-// });
-
-// todayBtn.addEventListener('click', () => {
-//   currentDate = new Date();
-//   renderCalendar(currentDate);
-// });
-
 renderCalendar(currentDate);
 
 
@@ -436,7 +417,9 @@ function renderNotes() {
         notes.splice(index, 1);
         saveNotes();
         renderNotes();
-        renderCalendar(currentDate); 
+        if (isPersian) renderPersianCalendar(currentDate);
+        else renderCalendar(currentDate);
+
       }
     });
 
@@ -449,7 +432,9 @@ function renderNotes() {
         notes[index].content = newContent;
         saveNotes();
         renderNotes();
-        renderCalendar(currentDate);
+        if (isPersian) renderPersianCalendar(currentDate);
+        else renderCalendar(currentDate);
+
       }
     });
 
@@ -475,7 +460,9 @@ addNoteBtn.addEventListener('click', () => {
     notes.push(newNote);
     saveNotes();
     renderNotes();
-    renderCalendar(currentDate);
+    if (isPersian) renderPersianCalendar(currentDate);
+    else renderCalendar(currentDate);
+
   }
 });
 
@@ -592,7 +579,9 @@ addDateNoteBtn.addEventListener('click', () => {
     notes = allNotes;
     renderDateNotes();
     renderNotes();
-    renderCalendar(currentDate);
+    if (isPersian) renderPersianCalendar(currentDate);
+    else renderCalendar(currentDate);
+
   }
 });
 
@@ -644,7 +633,9 @@ function renderDateNotes() {
         notes = allNotes;
         renderDateNotes();
         renderNotes();
-        renderCalendar(currentDate);
+        if (isPersian) renderPersianCalendar(currentDate);
+        else renderCalendar(currentDate);
+
       }
     });
 
@@ -657,7 +648,9 @@ function renderDateNotes() {
         notes = allNotes;
         renderDateNotes();
         renderNotes();
-        renderCalendar(currentDate);
+        if (isPersian) renderPersianCalendar(currentDate);
+        else renderCalendar(currentDate);
+
       }
     });
 
