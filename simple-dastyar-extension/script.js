@@ -110,26 +110,53 @@ const popupDate = document.getElementById('popup-date');
 // const closePopupBtn = document.getElementById('close-popup');
 
 
-// ------------------------------
-// 🗓️ Day Names Row
-// ------------------------------
-const daysRow = document.getElementById('calendar-days');
-
-// You can choose either English or Persian day names:
-// const dayNames = ['ی‌', 'د‌', 'س‌', 'چ‌', 'پ‌', 'ج‌', 'ش‌']; // Persian abbreviated
-const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; // English version
-
-daysRow.innerHTML = '';
-dayNames.forEach(day => {
-  const div = document.createElement('div');
-  div.textContent = day;
-  daysRow.appendChild(div);
-});
-
 
 let currentDate = new Date();
 
+const daysRow = document.getElementById('calendar-days');
+
+
+// 🧩 Build weekday headers for each mode
+function buildGregorianHeader() {
+  const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  daysRow.innerHTML = '';
+  names.forEach(n => {
+    const div = document.createElement('div');
+    div.textContent = n;
+    daysRow.appendChild(div);
+  });
+}
+
+function buildPersianHeader() {
+  const namesFa = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+  daysRow.innerHTML = '';
+  namesFa.forEach(n => {
+    const div = document.createElement('div');
+    div.textContent = n;
+    daysRow.appendChild(div);
+  });
+}
+
+// 🧭 Attach Gregorian navigation (so Persian overrides don’t leak back)
+function attachGregorianNav() {
+  prevMonthBtn.onclick = () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar(currentDate);
+  };
+  nextMonthBtn.onclick = () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar(currentDate);
+  };
+  todayBtn.onclick = () => {
+    currentDate = new Date();
+    renderCalendar(currentDate);
+  };
+}
+
+
 function renderCalendar(date) {
+  buildGregorianHeader(); // ensure EN header & Sun-first alignment in Gregorian
+
   calendarGrid.innerHTML = '';
 
   const year = date.getFullYear();
@@ -208,26 +235,165 @@ function renderCalendar(date) {
       calendarGrid.appendChild(div);
     }
   }
+  attachGregorianNav();   // ensure Gregorian prev/next/today handlers are active
 
   calendarGrid.classList.add('fade-in');
   setTimeout(() => calendarGrid.classList.remove('fade-in'), 1000);
 }
 
-// navigation
-prevMonthBtn.addEventListener('click', () => {
-  currentDate.setMonth(currentDate.getMonth() - 1);
-  renderCalendar(currentDate);
+
+// 🆕 Persian Calendar Mode
+const calendarModeCheckbox = document.getElementById('calendar-mode');
+const calendarModeLabel = document.getElementById('calendar-mode-label');
+
+let isPersian = false;
+
+let jalaliContext = { jYear: null, jMonth: null };
+
+// 🟦 helper: convert Persian digits to English
+function persianToEnglishDigits(str) {
+  return str.replace(/[۰-۹]/g, ch => '۰۱۲۳۴۵۶۷۸۹'.indexOf(ch)).replace(/[^\d]/g,'');
+}
+
+// 🟦 helper: convert English digits to Persian
+function convertToPersianDigits(num) {
+  return num.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+}
+
+calendarModeCheckbox.addEventListener('change', () => {
+  isPersian = calendarModeCheckbox.checked;
+  calendarModeLabel.textContent = isPersian ? 'تقویم شمسی' : 'تقویم میلادی';
+
+  if (isPersian) {
+    renderPersianCalendar(currentDate);
+  } else {
+    renderCalendar(currentDate);
+  }
 });
 
-nextMonthBtn.addEventListener('click', () => {
-  currentDate.setMonth(currentDate.getMonth() + 1);
-  renderCalendar(currentDate);
-});
 
-todayBtn.addEventListener('click', () => {
-  currentDate = new Date();
-  renderCalendar(currentDate);
-});
+// Convert between Gregorian <-> Jalali using jalaali-js
+// ==========================================================
+// 🆕 Persian Calendar Renderer — Fully Localized & Synced
+// ==========================================================
+function renderPersianCalendar(date) {
+  calendarGrid.innerHTML = '';
+
+  // Convert base Gregorian date to Jalali
+  const gYear = date.getFullYear();
+  const gMonth = date.getMonth() + 1;
+  const gDay = date.getDate();
+  const jDate = jalaali.toJalaali(gYear, gMonth, gDay);
+
+  let jYear = jDate.jy;
+  let jMonth = jDate.jm;
+  jalaliContext.jYear = jYear;
+  jalaliContext.jMonth = jMonth;
+
+  const monthNamesFa = [
+    'فروردین', 'اردیبهشت', 'خرداد', 'تیر',
+    'مرداد', 'شهریور', 'مهر', 'آبان',
+    'آذر', 'دی', 'بهمن', 'اسفند'
+  ];
+  monthYear.textContent = `${monthNamesFa[jMonth - 1]} ${convertToPersianDigits(jYear)}`;
+
+  
+  buildPersianHeader();
+
+
+  // 🟩 Determine Jalali month layout
+  const jFirst = jalaali.toGregorian(jYear, jMonth, 1);
+  const gFirstDow = new Date(jFirst.gy, jFirst.gm - 1, jFirst.gd).getDay(); // 0=Sun...6=Sat
+  const startDay = (gFirstDow + 1) % 7; // Sat-first grid
+  const totalDays = jalaali.jalaaliMonthLength(jYear, jMonth);
+
+  // Padding for previous month
+  for (let i = 0; i < startDay; i++) {
+    const div = document.createElement('div');
+    div.className = 'day other-month';
+    calendarGrid.appendChild(div);
+  }
+
+  const notes = JSON.parse(localStorage.getItem('notes')) || [];
+  const todayG = new Date();
+  const todayJ = jalaali.toJalaali(todayG.getFullYear(), todayG.getMonth() + 1, todayG.getDate());
+
+  // 🟩 Render all days
+  for (let day = 1; day <= totalDays; day++) {
+    const div = document.createElement('div');
+    div.className = 'day';
+    div.textContent = convertToPersianDigits(day);
+
+    // highlight today
+    if (day === todayJ.jd && jMonth === todayJ.jm && jYear === todayJ.jy) {
+      div.classList.add('today');
+    }
+
+    // mark notes
+    if (notes.some(n => {
+      const nDate = new Date(n.date);
+      const nJ = jalaali.toJalaali(nDate.getFullYear(), nDate.getMonth() + 1, nDate.getDate());
+      return nJ.jd === day && nJ.jm === jMonth && nJ.jy === jYear;
+    })) {
+      div.classList.add('has-note');
+    }
+
+    calendarGrid.appendChild(div);
+  }
+
+  // fill remaining cells
+  const cells = calendarGrid.children.length;
+  const remainder = cells % 7;
+  if (remainder !== 0) {
+    for (let i = 0; i < 7 - remainder; i++) {
+      const div = document.createElement('div');
+      div.className = 'day other-month';
+      calendarGrid.appendChild(div);
+    }
+  }
+
+  // animation
+  calendarGrid.classList.add('fade-in');
+  setTimeout(() => calendarGrid.classList.remove('fade-in'), 1000);
+
+  // 🟩 month navigation
+  prevMonthBtn.onclick = () => {
+    if (jMonth === 1) { jMonth = 12; jYear--; } else jMonth--;
+    const g = jalaali.toGregorian(jYear, jMonth, 1);
+    currentDate = new Date(g.gy, g.gm - 1, g.gd);
+    renderPersianCalendar(currentDate);
+  };
+  nextMonthBtn.onclick = () => {
+    if (jMonth === 12) { jMonth = 1; jYear++; } else jMonth++;
+    const g = jalaali.toGregorian(jYear, jMonth, 1);
+    currentDate = new Date(g.gy, g.gm - 1, g.gd);
+    renderPersianCalendar(currentDate);
+  };
+  todayBtn.onclick = () => {
+    currentDate = new Date();
+    renderPersianCalendar(currentDate);
+  };
+}
+
+
+
+
+
+// // navigation
+// prevMonthBtn.addEventListener('click', () => {
+//   currentDate.setMonth(currentDate.getMonth() - 1);
+//   renderCalendar(currentDate);
+// });
+
+// nextMonthBtn.addEventListener('click', () => {
+//   currentDate.setMonth(currentDate.getMonth() + 1);
+//   renderCalendar(currentDate);
+// });
+
+// todayBtn.addEventListener('click', () => {
+//   currentDate = new Date();
+//   renderCalendar(currentDate);
+// });
 
 renderCalendar(currentDate);
 
@@ -377,15 +543,31 @@ let selectedDate = null;
 calendarGrid.addEventListener('click', (e) => {
   if (!e.target.classList.contains('day') || e.target.classList.contains('other-month')) return;
 
-  const day = parseInt(e.target.textContent);
-  const month = currentDate.getMonth();
-  const year = currentDate.getFullYear();
+  // Works for Persian or English digits
+  const raw = e.target.textContent.trim();
+  const dayNum = Number(persianToEnglishDigits(raw) || raw);
+  let year, month, day;
 
-  selectedDate = new Date(year, month, day);
-  popupDateTitle.textContent = `یادداشت‌های ${day} / ${month + 1} / ${year}`;
+  if (isPersian) {
+    // convert Jalali → Gregorian
+    const g = jalaali.toGregorian(jalaliContext.jYear, jalaliContext.jMonth, dayNum);
+    year = g.gy; month = g.gm; day = g.gd;
+  } else {
+    year = currentDate.getFullYear();
+    month = currentDate.getMonth() + 1;
+    day = dayNum;
+  }
+
+  selectedDate = new Date(year, month - 1, day);
+
+  popupDateTitle.textContent = isPersian
+    ? `یادداشت‌های ${convertToPersianDigits(dayNum)} / ${convertToPersianDigits(jalaliContext.jMonth)} / ${convertToPersianDigits(jalaliContext.jYear)}`
+    : `یادداشت‌های ${day} / ${month} / ${year}`;
+
   popup.style.display = 'block';
   renderDateNotes();
 });
+
 
 // 🟨 Close popup
 closePopupBtn.addEventListener('click', () => {
