@@ -54,13 +54,13 @@ header {
   border: 1px solid #ccc;
 }
 
-/* Main layout: three columns */
+
 main {
   display: grid;
   grid-template-columns: 1fr 2fr 1.2fr;
   gap: 15px;
   padding: 15px;
-  height: calc(100vh - 70px); /* full height minus header */
+  height: calc(100vh - 70px); 
   box-sizing: border-box;
 }
 
@@ -108,7 +108,7 @@ main {
   background-color: #d3e4ff;
 }
 
-/* Calendar grid */
+
 #calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -118,7 +118,7 @@ main {
   margin-top: 10px;
 }
 
-/* Day boxes */
+
 .day {
   background-color: #f6f9ff;
   border-radius: 6px;
@@ -140,7 +140,7 @@ main {
   font-weight: bold;
 }
 
-/* Note indicator (dot) */
+
 .day.has-note::after {
   content: "•";
   color: #245b9b;
@@ -151,7 +151,7 @@ main {
   font-size: 12px;
 }
 
-/* Today button */
+
 #today-btn {
   background-color: #4285f4;
   color: white;
@@ -168,7 +168,7 @@ main {
   background-color: #2f6ee2;
 }
 
-/* Day name row */
+
 .days-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -186,9 +186,6 @@ main {
 }
 
 
-/* ---------------------- */
-/* Quick Access Styles — Blue Theme */
-/* ---------------------- */
 #quick-access {
   background-color: #fff;
   border-radius: 15px;
@@ -198,7 +195,7 @@ main {
   align-items: center;
 }
 
-/* Grid Layout */
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -207,9 +204,9 @@ main {
   margin: 20px 0;
 }
 
-/* Shortcut Tile */
+
 .shortcut {
-  background-color: #e6f0ff;  /* light blue */
+  background-color: #e6f0ff; 
   border-radius: 16px;
   padding: 12px 8px;
   text-align: center;
@@ -226,11 +223,11 @@ main {
 }
 
 .shortcut:hover {
-  background-color: #d3e4ff; /* slightly darker blue on hover */
+  background-color: #d3e4ff; 
   transform: translateY(-3px);
 }
 
-/* Favicon */
+
 .shortcut img {
   width: 32px;
   height: 32px;
@@ -238,14 +235,13 @@ main {
   margin-bottom: 4px;
 }
 
-/* Site Name */
+
 .shortcut span {
   font-size: 0.85rem;
   font-weight: 500;
   color: #245b9b; /* dark blue text */
 }
 
-/* Action buttons (delete & edit) */
 .shortcut .action-btn {
   position: absolute;
   top: 6px;
@@ -269,20 +265,20 @@ main {
   background: rgba(36, 91, 155, 0.15);
 }
 
-/* Delete button on right */
+
 .delete-btn {
   right: 6px;
 }
 
-/* Edit button on left */
+
 .edit-btn {
   left: 6px;
   font-size: 12px;
 }
 
-/* Beautiful Add Shortcut Button (Blue) */
+
 #add-shortcut {
-  background-color: #4a90e2;  /* Google blue */
+  background-color: #4a90e2;  
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -299,10 +295,6 @@ main {
 }
 
 
-
-/* ---------------------- */
-/* Notes Section */
-/* ---------------------- */
 #notes-section {
   background-color: #fff;
   border-radius: 15px;
@@ -317,11 +309,10 @@ main {
   margin-bottom: 10px;
 }
 
-/* Add button */
-/* Shared button style for both note buttons */
+
 #add-note,
 #add-note-nodate {
-  background-color: #4285f4;   /* Google blue */
+  background-color: #4285f4;   
   color: white;
   border: none;
   border-radius: 10px;
@@ -331,11 +322,11 @@ main {
   transition: 0.2s;
   margin-top: 12px;
   display: inline-block;
-  margin-right: 6px;           /* spacing between the two buttons */
+  margin-right: 6px;           
   box-shadow: 0 3px 6px rgba(66, 133, 244, 0.25);
 }
 
-/* Hover effect for both */
+
 #add-note:hover,
 #add-note-nodate:hover {
   background-color: #2f6ee2;
@@ -343,14 +334,14 @@ main {
 }
 
 
-/* Note box */
+
 .note {
   background-color: #f6f9ff;
   border: 1px solid #d3e4ff;
   border-radius: 10px;
-  padding: 16px 12px 12px;  /* 🟢 more top padding */
+  padding: 16px 12px 12px;  
   width: 90%;
-  margin-bottom: 14px;      /* 🟢 slightly more space between notes */
+  margin-bottom: 14px;      
   position: relative;
   text-align: right;
   transition: 0.2s ease;
@@ -359,8 +350,8 @@ main {
 .note-title {
   font-weight: bold;
   color: #245b9b;
-  margin-top: 6px;    /* 🟢 added space below buttons */
-  margin-bottom: 6px; /* 🟢 added space above text */
+  margin-top: 6px;    
+  margin-bottom: 6px; 
 }
 
 
@@ -374,7 +365,6 @@ main {
   white-space: pre-wrap;
 }
 
-/* Header row inside each note */
 .note-header {
   display: flex;
   justify-content: space-between;
@@ -382,7 +372,6 @@ main {
   margin-bottom: 6px;
 }
 
-/* Date text inside each note */
 .note-date {
   font-size: 0.75rem;
   color: #6c7a89;
@@ -390,7 +379,6 @@ main {
 }
 
 
-/* Action buttons for edit/delete */
 .note-actions {
   position: absolute;
   top: 8px;
@@ -418,7 +406,6 @@ main {
   background: rgba(36, 91, 155, 0.2);
 }
 
-/* 🌀 Fade animation when content updates */
 .fade-in {
   animation: fadeIn 1.0s ease;
 }
@@ -427,7 +414,6 @@ main {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 🆕 Calendar Mode Switch */
 #calendar-toggle {
   margin-top: 10px;
   display: flex;

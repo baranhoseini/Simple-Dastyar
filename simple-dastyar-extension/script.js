@@ -1,5 +1,5 @@
 // ------------------------------
-// 🔍 SEARCH BAR FUNCTIONALITY
+//  SEARCH BAR FUNCTIONALITY
 // ------------------------------
 document.getElementById('search-button').addEventListener('click', () => {
   const query = document.getElementById('search-input').value.trim();
@@ -9,7 +9,6 @@ document.getElementById('search-button').addEventListener('click', () => {
   }
 });
 
-// Optional: allow pressing Enter key to search too
 document.getElementById('search-input').addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
     document.getElementById('search-button').click();
@@ -97,7 +96,6 @@ function openAddNotePopup() {
 
   document.body.appendChild(popup);
 
-  // Focus styling (unchanged)
   const titleInput = popup.querySelector("#popup-note-title");
   const contentInput = popup.querySelector("#popup-note-content");
 
@@ -225,10 +223,8 @@ function openAddNoteNoDatePopup() {
   const titleInput = document.getElementById("popup-nodate-title");
   const contentInput = document.getElementById("popup-nodate-content");
 
-  // Close
   document.getElementById("cancel-nodate-btn").onclick = () => popup.remove();
 
-  // Save — IMPORTANT PART: date = null
   document.getElementById("save-nodate-btn").onclick = () => {
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
@@ -241,13 +237,13 @@ function openAddNoteNoDatePopup() {
     notes.push({
       title,
       content,
-      date: null   // 🟢 no date -> won't be linked to calendar days
+      date: null  
     });
 
     saveNotes();
     renderNotes();
 
-    // Optional: re-render calendar; null dates don't match any day anyway
+  
     if (isPersian) renderPersianCalendar(currentDate);
     else renderCalendar(currentDate);
 
@@ -257,7 +253,7 @@ function openAddNoteNoDatePopup() {
 
 
 // ------------------------------
-// ⚡ QUICK ACCESS FUNCTIONALITY (Final Polished Version)
+//  QUICK ACCESS 
 // ------------------------------
 const shortcutsContainer = document.getElementById('shortcuts-container');
 const addShortcutBtn = document.getElementById('add-shortcut');
@@ -284,13 +280,13 @@ function renderShortcuts() {
       <span>${shortcut.name}</span>
     `;
 
-    // open link
+   
     tile.addEventListener('click', (e) => {
-      if (e.target.classList.contains('action-btn')) return; // don't trigger link on edit/delete
+      if (e.target.classList.contains('action-btn')) return; 
       window.open(shortcut.url, '_blank');
     });
 
-    // delete
+    
     tile.querySelector('.delete-btn').addEventListener('click', () => {
       if (confirm(`آیا از حذف "${shortcut.name}" مطمئن هستید؟`)) {
         shortcuts.splice(index, 1);
@@ -299,7 +295,7 @@ function renderShortcuts() {
       }
     });
 
-    // edit
+    
     tile.querySelector('.edit-btn').addEventListener('click', () => {
       const newName = prompt('نام جدید:', shortcut.name);
       const newUrl = prompt('آدرس جدید:', shortcut.url);
@@ -333,7 +329,7 @@ renderShortcuts();
 
 
 // ------------------------------
-// 📅 CALENDAR (Gregorian)
+//  CALENDAR (Gregorian)
 // ------------------------------
 const calendarGrid = document.getElementById('calendar-grid');
 const monthYear = document.getElementById('month-year');
@@ -341,12 +337,10 @@ const prevMonthBtn = document.getElementById('prev-month');
 const nextMonthBtn = document.getElementById('next-month');
 const todayBtn = document.getElementById('today-btn');
 
-// Popup elements
+
 const datePopup = document.getElementById('date-note-popup');
 const popupDate = document.getElementById('popup-date');
-// const dateNotesList = document.getElementById('date-notes-list');
-// const addDateNoteBtn = document.getElementById('add-date-note');
-// const closePopupBtn = document.getElementById('close-popup');
+
 
 
 
@@ -355,7 +349,6 @@ let currentDate = new Date();
 const daysRow = document.getElementById('calendar-days');
 
 
-// 🧩 Build weekday headers for each mode
 function buildGregorianHeader() {
   const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   daysRow.innerHTML = '';
@@ -376,7 +369,6 @@ function buildPersianHeader() {
   });
 }
 
-// 🧭 Attach Gregorian navigation (so Persian overrides don’t leak back)
 function attachGregorianNav() {
   prevMonthBtn.onclick = () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
@@ -394,29 +386,29 @@ function attachGregorianNav() {
 
 
 function renderCalendar(date) {
-  buildGregorianHeader(); // ensure EN header & Sun-first alignment in Gregorian
+  buildGregorianHeader(); 
 
   calendarGrid.innerHTML = '';
 
   const year = date.getFullYear();
   const month = date.getMonth();
 
-  // month names
+ 
   const monthNames = [
     'ژانویه', 'فوریه', 'مارس', 'آوریل', 'مه', 'ژوئن',
     'ژوئیه', 'اوت', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'
   ];
   monthYear.textContent = `${monthNames[month]} ${year}`;
 
-  // start of month
+  
   const firstDay = new Date(year, month, 1);
-  const startDay = firstDay.getDay(); // 0 = Sun ... 6 = Sat
+  const startDay = firstDay.getDay(); 
 
-  // number of days in month
+ 
   const lastDay = new Date(year, month + 1, 0);
   const totalDays = lastDay.getDate();
 
-  // previous month padding
+ 
   const prevLastDay = new Date(year, month, 0).getDate();
 
   // notes (for indicator)
@@ -427,7 +419,7 @@ function renderCalendar(date) {
   const nextDays = 7 - (totalCells % 7);
   const today = new Date();
 
-  // previous month's days (grayed out)
+ 
   for (let i = startDay; i > 0; i--) {
     const div = document.createElement('div');
     div.className = 'day other-month';
@@ -435,7 +427,7 @@ function renderCalendar(date) {
     calendarGrid.appendChild(div);
   }
 
-  // current month's days
+  
   for (let day = 1; day <= totalDays; day++) {
     const div = document.createElement('div');
     div.className = 'day';
@@ -465,7 +457,7 @@ function renderCalendar(date) {
     calendarGrid.appendChild(div);
   }
 
-  // next month's days (grayed out)
+  
   if (nextDays < 7) {
     for (let i = 1; i <= nextDays; i++) {
       const div = document.createElement('div');
@@ -481,7 +473,7 @@ function renderCalendar(date) {
 }
 
 
-// 🆕 Persian Calendar Mode
+//Persian Calendar Mode
 const calendarModeCheckbox = document.getElementById('calendar-mode');
 const calendarModeLabel = document.getElementById('calendar-mode-label');
 
@@ -489,12 +481,10 @@ let isPersian = false;
 
 let jalaliContext = { jYear: null, jMonth: null };
 
-// 🟦 helper: convert Persian digits to English
 function persianToEnglishDigits(str) {
   return str.replace(/[۰-۹]/g, ch => '۰۱۲۳۴۵۶۷۸۹'.indexOf(ch)).replace(/[^\d]/g,'');
 }
 
-// 🟦 helper: convert English digits to Persian
 function convertToPersianDigits(num) {
   return num.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 }
@@ -511,9 +501,9 @@ calendarModeCheckbox.addEventListener('change', () => {
 });
 
 
-// Convert between Gregorian <-> Jalali using jalaali-js
+
 // ==========================================================
-// 🆕 Persian Calendar Renderer — Fully Localized & Synced
+//  Persian Calendar Renderer 
 // ==========================================================
 function renderPersianCalendar(date) {
   calendarGrid.innerHTML = '';
@@ -535,18 +525,14 @@ function renderPersianCalendar(date) {
     'آذر', 'دی', 'بهمن', 'اسفند'
   ];
   monthYear.textContent = `${monthNamesFa[jMonth - 1]} ${convertToPersianDigits(jYear)}`;
-
   
   buildPersianHeader();
 
-
-  // 🟩 Determine Jalali month layout
   const jFirst = jalaali.toGregorian(jYear, jMonth, 1);
-  const gFirstDow = new Date(jFirst.gy, jFirst.gm - 1, jFirst.gd).getDay(); // 0=Sun...6=Sat
-  const startDay = (gFirstDow + 1) % 7; // Sat-first grid
+  const gFirstDow = new Date(jFirst.gy, jFirst.gm - 1, jFirst.gd).getDay(); 
+  const startDay = (gFirstDow + 1) % 7; 
   const totalDays = jalaali.jalaaliMonthLength(jYear, jMonth);
 
-  // Padding for previous month
   for (let i = 0; i < startDay; i++) {
     const div = document.createElement('div');
     div.className = 'day other-month';
@@ -557,18 +543,15 @@ function renderPersianCalendar(date) {
   const todayG = new Date();
   const todayJ = jalaali.toJalaali(todayG.getFullYear(), todayG.getMonth() + 1, todayG.getDate());
 
-  // 🟩 Render all days
   for (let day = 1; day <= totalDays; day++) {
     const div = document.createElement('div');
     div.className = 'day';
     div.textContent = convertToPersianDigits(day);
 
-    // highlight today
     if (day === todayJ.jd && jMonth === todayJ.jm && jYear === todayJ.jy) {
       div.classList.add('today');
     }
 
-    // mark notes
     if (notes.some(n => {
       const nDate = new Date(n.date);
       const nJ = jalaali.toJalaali(nDate.getFullYear(), nDate.getMonth() + 1, nDate.getDate());
@@ -580,7 +563,6 @@ function renderPersianCalendar(date) {
     calendarGrid.appendChild(div);
   }
 
-  // fill remaining cells
   const cells = calendarGrid.children.length;
   const remainder = cells % 7;
   if (remainder !== 0) {
@@ -591,11 +573,10 @@ function renderPersianCalendar(date) {
     }
   }
 
-  // animation
+ 
   calendarGrid.classList.add('fade-in');
   setTimeout(() => calendarGrid.classList.remove('fade-in'), 1000);
 
-  // 🟩 month navigation
   prevMonthBtn.onclick = () => {
     if (jMonth === 1) { jMonth = 12; jYear--; } else jMonth--;
     const g = jalaali.toGregorian(jYear, jMonth, 1);
@@ -619,7 +600,7 @@ renderCalendar(currentDate);
 
 
 // ------------------------------
-// 📝 NOTES SECTION
+//  NOTES SECTION
 // ------------------------------
 const notesList = document.getElementById('notes-list');
 const addNoteBtn = document.getElementById('add-note');
@@ -707,10 +688,10 @@ renderNotes();
 
 
 // ======================================================
-// 📅 DATE-SPECIFIC NOTES POPUP (FINAL WORKING VERSION)
+// DATE-SPECIFIC NOTES POPUP 
 // ======================================================
 
-// 🟦 Create popup dynamically if it's not in the HTML
+
 if (!document.getElementById('date-note-popup')) {
   const popupHtml = `
     <div id="date-note-popup" style="
@@ -753,7 +734,7 @@ if (!document.getElementById('date-note-popup')) {
   document.body.insertAdjacentHTML('beforeend', popupHtml);
 }
 
-// 🟦 References (some already exist)
+
 const popup = document.getElementById('date-note-popup');
 const popupDateTitle = document.getElementById('popup-date');
 const dateNotesList = document.getElementById('date-notes-list');
@@ -762,7 +743,7 @@ const closePopupBtn = document.getElementById('close-popup');
 
 let selectedDate = null;
 
-// 🟨 Listen for clicks on calendar days
+
 calendarGrid.addEventListener('click', (e) => {
   if (!e.target.classList.contains('day') || e.target.classList.contains('other-month')) return;
 
@@ -792,12 +773,10 @@ calendarGrid.addEventListener('click', (e) => {
 });
 
 
-// 🟨 Close popup
 closePopupBtn.addEventListener('click', () => {
   popup.style.display = 'none';
 });
 
-// 🟨 Add a new note for the selected date
 addDateNoteBtn.addEventListener('click', () => {
   if (!selectedDate) return;
   const title = prompt('عنوان یادداشت:');
@@ -811,7 +790,7 @@ addDateNoteBtn.addEventListener('click', () => {
     });
     localStorage.setItem('notes', JSON.stringify(allNotes));
 
-    // 🔹 Sync global notes and refresh
+
     notes = allNotes;
     renderDateNotes();
     renderNotes();
@@ -822,7 +801,6 @@ addDateNoteBtn.addEventListener('click', () => {
 });
 
 
-// 🟨 Render notes for the selected date
 function renderDateNotes() {
   const allNotes = JSON.parse(localStorage.getItem('notes')) || [];
   const dayNotes = allNotes.filter(n => {
