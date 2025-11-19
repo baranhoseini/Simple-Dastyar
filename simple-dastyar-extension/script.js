@@ -94,6 +94,7 @@ function openAddNotePopup() {
     </div>
   `;
 
+
   document.body.appendChild(popup);
 
   // Focus styling (unchanged)
@@ -139,6 +140,120 @@ function openAddNotePopup() {
   };
 }
 
+
+function openAddNoteNoDatePopup() {
+  // Remove old instance if exists
+  const oldPopup = document.getElementById("custom-add-note-popup-nodate");
+  if (oldPopup) oldPopup.remove();
+
+  const popup = document.createElement("div");
+  popup.id = "custom-add-note-popup-nodate";
+  popup.style = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 360px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 8px 35px rgba(0,0,0,0.18);
+    z-index: 99999;
+    text-align: right;
+    font-family: inherit;
+  `;
+
+  popup.innerHTML = `
+    <h3 style="color:#245b9b; margin:0 0 18px; font-size:1.1rem;">
+      افزودن یادداشت بدون تاریخ
+    </h3>
+
+    <label style="font-weight:600; font-size:0.9rem;">عنوان:</label>
+    <input id="popup-nodate-title" style="
+      width:100%;
+      padding:10px 12px;
+      margin:8px 0 18px;
+      border-radius:12px;
+      border:1px solid #d0d7df;
+      background:#fafbff;
+      font-size:0.9rem;
+      outline:none;
+      box-sizing:border-box;
+    ">
+
+    <label style="font-weight:600; font-size:0.9rem;">توضیحات:</label>
+    <textarea id="popup-nodate-content" style="
+      width:100%;
+      height:110px;
+      padding:10px 12px;
+      margin-top:8px;
+      border-radius:12px;
+      border:1px solid #d0d7df;
+      background:#fafbff;
+      font-size:0.9rem;
+      resize:none;
+      outline:none;
+      box-sizing:border-box;
+      overflow:auto;
+    "></textarea>
+
+    <div style="margin-top:22px; display:flex; gap:10px; justify-content:flex-end;">
+      <button id="cancel-nodate-btn" style="
+        background:#e0e0e0;
+        border:none;
+        padding:8px 16px;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:0.9rem;
+      ">لغو</button>
+
+      <button id="save-nodate-btn" style="
+        background:#4a90e2;
+        color:white;
+        border:none;
+        padding:8px 16px;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:0.9rem;
+        box-shadow:0 2px 6px rgba(74,144,226,0.4);
+      ">ذخیره</button>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+  const titleInput = document.getElementById("popup-nodate-title");
+  const contentInput = document.getElementById("popup-nodate-content");
+
+  // Close
+  document.getElementById("cancel-nodate-btn").onclick = () => popup.remove();
+
+  // Save — IMPORTANT PART: date = null
+  document.getElementById("save-nodate-btn").onclick = () => {
+    const title = titleInput.value.trim();
+    const content = contentInput.value.trim();
+
+    if (!title || !content) {
+      alert("لطفاً عنوان و متن را وارد کنید.");
+      return;
+    }
+
+    notes.push({
+      title,
+      content,
+      date: null   // 🟢 no date -> won't be linked to calendar days
+    });
+
+    saveNotes();
+    renderNotes();
+
+    // Optional: re-render calendar; null dates don't match any day anyway
+    if (isPersian) renderPersianCalendar(currentDate);
+    else renderCalendar(currentDate);
+
+    popup.remove();
+  };
+}
 
 
 // ------------------------------
@@ -508,6 +623,7 @@ renderCalendar(currentDate);
 // ------------------------------
 const notesList = document.getElementById('notes-list');
 const addNoteBtn = document.getElementById('add-note');
+const addNoteNoDateBtn = document.getElementById('add-note-nodate');
 
 let notes = JSON.parse(localStorage.getItem('notes')) || [];
 
@@ -526,14 +642,23 @@ function renderNotes() {
   notes.forEach((note, index) => {
     const div = document.createElement('div');
     div.className = 'note';
+    const formattedDate = note.date
+      ? new Date(note.date).toLocaleDateString('fa-IR')
+      : "💭";
+
     div.innerHTML = `
-      <div class="note-actions">
-        <button class="edit-note" title="ویرایش">🪄</button>
-        <button class="delete-note" title="حذف">×</button>
+      <div class="note-header">
+        <div class="note-actions">
+          <button class="edit-note" title="ویرایش">🪄</button>
+          <button class="delete-note" title="حذف">×</button>
+        </div>
+        <div class="note-date">${formattedDate}</div>
       </div>
+
       <div class="note-title">${note.title}</div>
       <div class="note-content">${note.content}</div>
     `;
+
 
     // Delete note
     div.querySelector('.delete-note').addEventListener('click', () => {
@@ -574,6 +699,8 @@ function saveNotes() {
 // Add a new note
 addNoteBtn.addEventListener('click', openAddNotePopup);
 
+// 🆕 Add note WITHOUT date
+addNoteNoDateBtn.addEventListener('click', openAddNoteNoDatePopup);
 
 // Initial render
 renderNotes();
