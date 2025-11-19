@@ -16,6 +16,130 @@ document.getElementById('search-input').addEventListener('keypress', (e) => {
   }
 });
 
+function openAddNotePopup() {
+  const oldPopup = document.getElementById("custom-add-note-popup");
+  if (oldPopup) oldPopup.remove();
+
+  const popup = document.createElement("div");
+  popup.id = "custom-add-note-popup";
+  popup.style = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 360px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+    z-index: 99999;
+    text-align: right;
+    font-family: inherit;
+    box-sizing: border-box;
+  `;
+
+  popup.innerHTML = `
+    <h3 style="color:#245b9b; margin:0 0 18px; font-size:1.1rem;">افزودن یادداشت جدید</h3>
+
+    <label style="font-weight:600; font-size:0.9rem;">عنوان:</label>
+    <input id="popup-note-title" style="
+      width:100%;
+      padding:10px 12px;
+      margin:8px 0 18px;
+      border-radius:12px;
+      border:1.5px solid #d0d7df;
+      background:#fafbff;
+      font-size:0.9rem;
+      transition:0.2s;
+      outline:none;
+      box-sizing:border-box;
+    ">
+
+    <label style="font-weight:600; font-size:0.9rem;">توضیحات:</label>
+    <textarea id="popup-note-content" style="
+      width:100%;
+      height:110px;
+      padding:10px 12px;
+      margin-top:8px;
+      border-radius:12px;
+      border:1.5px solid #d0d7df;
+      background:#fafbff;
+      font-size:0.9rem;
+      resize:none;     /* FIX: prevents overflow resize box */
+      outline:none;
+      box-sizing:border-box;
+      overflow:auto;    /* FIX: No overflow outside panel */
+    "></textarea>
+
+    <div style="margin-top:22px; display:flex; gap:10px; justify-content:flex-end;">
+      <button id="cancel-note-btn" style="
+        background:#e0e0e0;
+        border:none;
+        padding:8px 16px;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:0.9rem;
+      ">لغو</button>
+
+      <button id="save-note-btn" style="
+        background:#4a90e2;
+        color:white;
+        border:none;
+        padding:8px 16px;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:0.9rem;
+        box-shadow:0 2px 6px rgba(74,144,226,0.4);
+      ">ذخیره</button>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+  // Focus styling (unchanged)
+  const titleInput = popup.querySelector("#popup-note-title");
+  const contentInput = popup.querySelector("#popup-note-content");
+
+  [titleInput, contentInput].forEach(el => {
+    el.addEventListener("focus", () => {
+      el.style.borderColor = "#4a90e2";
+      el.style.background = "#ffffff";
+      el.style.boxShadow = "0 0 0 3px rgba(74,144,226,0.15)";
+    });
+    el.addEventListener("blur", () => {
+      el.style.borderColor = "#d0d7df";
+      el.style.background = "#fafbff";
+      el.style.boxShadow = "none";
+    });
+  });
+
+  document.getElementById("cancel-note-btn").onclick = () => popup.remove();
+
+  document.getElementById("save-note-btn").onclick = () => {
+    const title = titleInput.value.trim();
+    const content = contentInput.value.trim();
+
+    if (!title || !content) {
+      alert("لطفاً عنوان و متن را وارد کنید.");
+      return;
+    }
+
+    notes.push({
+      title,
+      content,
+      date: new Date().toISOString()
+    });
+
+    saveNotes();
+    renderNotes();
+    if (isPersian) renderPersianCalendar(currentDate);
+    else renderCalendar(currentDate);
+
+    popup.remove();
+  };
+}
+
+
 
 // ------------------------------
 // ⚡ QUICK ACCESS FUNCTIONALITY (Final Polished Version)
@@ -448,23 +572,8 @@ function saveNotes() {
 }
 
 // Add a new note
-addNoteBtn.addEventListener('click', () => {
-  const title = prompt('عنوان یادداشت:');
-  const content = prompt('متن یادداشت:');
-  if (title && content) {
-    const newNote = {
-      title,
-      content,
-      date: new Date().toISOString() // for future calendar linking
-    };
-    notes.push(newNote);
-    saveNotes();
-    renderNotes();
-    if (isPersian) renderPersianCalendar(currentDate);
-    else renderCalendar(currentDate);
+addNoteBtn.addEventListener('click', openAddNotePopup);
 
-  }
-});
 
 // Initial render
 renderNotes();
